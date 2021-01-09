@@ -4,6 +4,9 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix='>')
 
 
+WALLACE_ID = 205886015758401537
+ANA_ID = 202226964134756352
+
 extensions = []
 
 
@@ -21,17 +24,26 @@ async def on_ready():
     print('-------')
 
 
-WALLACE_ID = 205886015758401537
+@bot.event
+async def on_message(message):
+    if message.author.id == ANA_ID and message.attachments:
+        await message.add_reaction("<:puke:454771752518680587>")
 
 
 @bot.event
 async def on_message_delete(message):
-    if message.author.id in [WALLACE_ID]:
+    if message.author.id == WALLACE_ID:
         if message.content:
             _message = 'wallace excluiu: "{}"'.format(message.content)
         else:
             _message = '\n'.join([i.proxy_url for i in message.attachments])
         await message.channel.send(_message)
+
+
+@bot.event
+async def on_message_edit(before, after):
+    if after.author.id == WALLACE_ID:
+        await after.reply(f'mensagem original: {before.content}')
 
 
 @bot.command()
