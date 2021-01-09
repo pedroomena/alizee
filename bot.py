@@ -28,6 +28,7 @@ async def on_ready():
 async def on_message(message):
     if message.author.id == ANA_ID and message.attachments:
         await message.add_reaction("<:puke:454771752518680587>")
+    await bot.process_commands(message)
 
 
 @bot.event
