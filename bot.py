@@ -43,7 +43,7 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_message_edit(before, after):
-    if after.author.id == WALLACE_ID:
+    if after.author.id == [WALLACE_ID, 171033510319095809] and before.content != after.content:
         await after.reply(f'mensagem original: {before.content}')
 
 
