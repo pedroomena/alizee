@@ -30,7 +30,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.author.id == ANA_ID and message.attachments:
-        for char in ["🇭", "🇴", "🇪", "❗"]:
+        for char in ["🇫" "🇴" "🇩" "🇦" "🇸" "🇪", "❗"]:
             # await message.add_reaction("<:puke:454771752518680587>")
             await message.add_reaction(char)
 
