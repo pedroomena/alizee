@@ -89,6 +89,7 @@ async def on_raw_message_delete(payload: RawMessageDeleteEvent):
 
     if message:
         await on_cached_message_delete(message)
+        return
 
     channel = bot.get_guild(id=payload.guild_id).get_channel(payload.channel_id)
     embed = Embed(
