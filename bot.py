@@ -68,6 +68,11 @@ async def on_raw_message_edit(payload: RawMessageUpdateEvent):
         .get_channel(payload.channel_id)
         .fetch_message(payload.message_id)
     )
+
+    if before and before.content == after.content:
+        await bot.process_commands(before)
+        return
+
     embed = Embed(
         title=f"{after.author.name} editou uma mensagem",
         color=Color.random(),
