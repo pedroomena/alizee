@@ -1,5 +1,10 @@
+import unicodedata
 from io import BytesIO
+from typing import List
+from urllib.error import HTTPError
+from urllib.request import urlopen
 
+from bs4 import BeautifulSoup
 from discord import Member, Embed, Color, File, RawMessageDeleteEvent, RawMessageUpdateEvent, Message
 from discord.ext import commands
 
@@ -106,9 +111,48 @@ async def on_raw_message_delete(payload: RawMessageDeleteEvent):
     await send_message(channel=channel, embed=embed)
 
 
-@bot.command()
-async def ver(ctx, member: Member):
+@bot.command(aliases=["ver", "foto"])
+async def avatar(ctx, member: Member):
     await ctx.send(member.avatar_url)
+
+
+def normalize_word(word: str) -> str:
+    return unicodedata.normalize("NFD", word).encode("ascii", "ignore").decode("utf-8")
+
+
+def get_meaning_url(word: str) -> str:
+    normalized_word = normalize_word(word)
+    site = "https://www.dicio.com.br"
+    return f"{site}/{normalized_word}"
+
+
+def get_page_html(url: str) -> str:
+    page = urlopen(url)
+    return page.read().decode("utf-8")
+
+
+def get_meaning_from_html(html: str) -> List[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    return [span.string for span in soup.select(".textonovo > span:not([class])") if len(span.contents) == 1]
+
+
+def format_meaning_message(meanings: List[str]) -> str:
+    return "\n".join([f"● {_meaning}" for _meaning in meanings])
+
+
+@bot.command(aliases=["significado"])
+async def meaning(ctx, word: str):
+    url = get_meaning_url(word)
+
+    try:
+        html = get_page_html(url)
+    except HTTPError:
+        await ctx.send("nao achei")
+        return
+
+    raw_meanings = get_meaning_from_html(html)
+    meanings = format_meaning_message(raw_meanings)
+    await ctx.send(f"Significado de **{word}**\n\n{meanings}")
 
 
 bot.run(":)")
