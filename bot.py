@@ -12,7 +12,7 @@ bot = commands.Bot(command_prefix=">")
 
 
 ALIZEE_ID = 797314179719364619
-HE = 884953733983793202
+HE = 1063184852452638720
 TEST_SV = 230792723471400960
 
 extensions = []
@@ -33,7 +33,7 @@ async def on_ready():
 
 
 async def send_message(*, channel, **kwargs):
-    send_to = channel.guild.get_channel(HE)
+    send_to = bot.get_channel(HE)
     if channel.guild.id == TEST_SV:
         send_to = channel
     await send_to.send(**kwargs)
